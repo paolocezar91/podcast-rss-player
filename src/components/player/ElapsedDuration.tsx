@@ -8,7 +8,7 @@ type Props = {
 
 const ElapsedDuration = ({ duration, played }: Props) => {
   return (
-    <div className="div flex items-center gap-1 bg-black/10 hover:bg-black/20 p-2 rounded-2xl text-white">
+    <div className="flex items-center gap-1 bg-black/10 hover:bg-black/20 p-2 rounded-2xl text-white">
       <strong id="elapsed">
         <Duration seconds={duration * played} />
       </strong>

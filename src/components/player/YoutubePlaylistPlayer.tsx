@@ -2,12 +2,13 @@
 import { YoutubePlayerElement, YoutubePlaylistModel } from "@/types/youtube";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import ProgressBar from "./ProgressBar";
 
 const initialState = {
   src: "",
   pip: false,
   playing: false,
-  controls: true,
+  controls: false,
   light: false,
   volume: 1,
   muted: false,
@@ -34,6 +35,7 @@ const YoutubePlaylistPlayer = ({
 }) => {
   const playerRef = useRef<YoutubePlayerElement | null>(null);
   const [state, setState] = useState<PlayerState>(initialState);
+  const [lastSetVolume, setLastSetVolume] = useState<number>(1);
 
   useEffect(() => {
     const load = (src?: string) => {
@@ -49,6 +51,31 @@ const YoutubePlaylistPlayer = ({
 
     load(playlist.url);
   }, [playlist]);
+
+  const handlePlayPause = () => {
+    setState((prevState) => ({ ...prevState, playing: !prevState.playing }));
+  };
+
+  const handleVolumeChange = (
+    event: React.SyntheticEvent<HTMLInputElement>
+  ) => {
+    const inputTarget = event.target as HTMLInputElement;
+    setLastSetVolume(Number.parseFloat(inputTarget.value));
+
+    setState((prevState) => ({
+      ...prevState,
+      muted: false,
+      volume: Number.parseFloat(inputTarget.value),
+    }));
+  };
+
+  const handleToggleMuted = () => {
+    setState((prevState) => ({
+      ...prevState,
+      muted: !prevState.muted,
+      volume: prevState.muted ? lastSetVolume : 0,
+    }));
+  };
 
   const handleRateChange = () => {
     const player = playerRef.current;
@@ -66,6 +93,27 @@ const YoutubePlaylistPlayer = ({
 
   const handlePause = () => {
     setState((prevState) => ({ ...prevState, playing: false }));
+  };
+
+  const handleSeekMouseDown = () => {
+    setState((prevState) => ({ ...prevState, seeking: true }));
+  };
+
+  const handleSeekChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    const inputTarget = event.target as HTMLInputElement;
+    setState((prevState) => ({
+      ...prevState,
+      played: Number.parseFloat(inputTarget.value),
+    }));
+  };
+
+  const handleSeekMouseUp = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    const inputTarget = event.target as HTMLInputElement;
+    setState((prevState) => ({ ...prevState, seeking: false }));
+    if (playerRef.current) {
+      playerRef.current.currentTime =
+        Number.parseFloat(inputTarget.value) * playerRef.current.duration;
+    }
   };
 
   const handleProgress = () => {
@@ -151,65 +199,54 @@ const YoutubePlaylistPlayer = ({
     pip,
   } = state;
 
+  const title =
+    (playerRef.current?.api as YT.Player)?.getVideoData()?.title ?? "";
+
   return (
-    <div className="flex flex-row w-full">
-      <section className="flex-1 w-1/2">
-        <div className="player-wrapper relative bg-gray-300 w-full">
-          <ReactPlayer
-            ref={setPlayerRef}
-            className="react-player"
-            style={{ width: "100%", height: "auto", aspectRatio: "16/9" }}
-            src={src}
-            pip={pip}
-            playing={playing}
-            controls={controls}
-            light={light}
-            loop={loop}
-            playbackRate={playbackRate}
-            volume={volume}
-            muted={muted}
-            onLoadStart={() => console.log("onLoadStart")}
-            onReady={() => console.log("onReady")}
-            onStart={(e) => console.log("onStart", e)}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onRateChange={handleRateChange}
-            onSeeking={(e) => console.log("onSeeking", e)}
-            onSeeked={(e) => console.log("onSeeked", e)}
-            onEnded={handleEnded}
-            onError={(e) => console.log("onError", e)}
-            onTimeUpdate={handleTimeUpdate}
-            onProgress={handleProgress}
-            onDurationChange={handleDurationChange}
-          />
-          {/* <div className="w-full flex flex-col relative">
-            <InterativeProgressBar
-              loaded={loaded}
-              played={played}
-              onMouseDown={handleSeekMouseDown}
-              onChange={handleSeekChange}
-              onMouseUp={handleSeekMouseUp}
-            />
-            <div className="flex items-center gap-2 p-2 bg-black/20">
-              <PlayPauseButton playing={playing} onToggle={handlePlayPause} />
-              <VolumeControl
-                volume={volume}
-                muted={muted}
-                onToggleMuted={handleToggleMuted}
-                onChange={handleVolumeChange}
-              />
-              <ElapsedDuration duration={duration} played={played} />
-              <div className="grow" />
-              <Settings
-                open={openSettings}
-                onToggle={handleOpenSettings}
-                playbackRate={playbackRate}
-                onSetPlaybackRate={handleSetPlaybackRate}
-              />
-            </div>
-          </div> */}
-        </div>
-      </section>
+    <div className="h-full w-full flex flex-col justify-center items-center max-w-[1369px] p-4">
+      <ReactPlayer
+        ref={setPlayerRef}
+        className="react-player"
+        style={{ width: "100%", height: "auto", aspectRatio: "16/9" }}
+        src={src}
+        pip={pip}
+        playing={playing}
+        controls={controls}
+        light={light}
+        loop={loop}
+        playbackRate={playbackRate}
+        volume={volume}
+        muted={muted}
+        onLoadStart={() => console.log("onLoadStart")}
+        onReady={() => console.log("onReady")}
+        onStart={(e) => console.log("onStart", e)}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onRateChange={handleRateChange}
+        onSeeking={(e) => console.log("onSeeking", e)}
+        onSeeked={(e) => console.log("onSeeked", e)}
+        onEnded={handleEnded}
+        onError={(e) => console.log("onError", e)}
+        onTimeUpdate={handleTimeUpdate}
+        onProgress={handleProgress}
+        onDurationChange={handleDurationChange}
+      />
+      <ProgressBar
+        playerState={state}
+        handlePlayPause={handlePlayPause}
+        handleSeekChange={handleSeekChange}
+        handleSeekMouseDown={handleSeekMouseDown}
+        handleSeekMouseUp={handleSeekMouseUp}
+        handleToggleMuted={handleToggleMuted}
+        handleVolumeChange={handleVolumeChange}
+      >
+        <span
+          title={`Now Playing: ${title}`}
+          className="text-white flex gap-1 w-64 p-2"
+        >
+          Now Playing: <strong>{title}</strong>
+        </span>
+      </ProgressBar>
     </div>
   );
 };

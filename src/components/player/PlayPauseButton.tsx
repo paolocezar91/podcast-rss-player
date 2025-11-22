@@ -4,9 +4,10 @@ import { Pause, Play } from "lucide-react";
 type Props = {
   playing: boolean;
   onToggle: () => void;
+  iconSize?: number;
 };
 
-const PlayPauseButton = ({ playing, onToggle }: Props) => {
+const PlayPauseButton = ({ playing, onToggle, iconSize }: Props) => {
   return (
     <button
       className="bg-black/10 hover:bg-black/20 p-2 rounded-2xl"
@@ -14,9 +15,9 @@ const PlayPauseButton = ({ playing, onToggle }: Props) => {
       onClick={onToggle}
     >
       {playing ? (
-        <Pause fill="white" color="white" />
+        <Pause size={iconSize} fill="white" color="white" />
       ) : (
-        <Play fill="white" color="white" />
+        <Play size={iconSize} fill="white" color="white" />
       )}
     </button>
   );

@@ -3,6 +3,8 @@ import { YoutubePlaylistModel } from "@/types/youtube";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import YoutubePlaylistPlayer from "./player/YoutubePlaylistPlayer";
+import DescriptionColumn from "./ui/content/DescriptionColumn";
+import { ContentColumn } from "./ui/content/ContentColumn";
 
 export default function YoutubePlaylist({
   playlistModel,
@@ -54,9 +56,9 @@ export default function YoutubePlaylist({
     );
   };
   return (
-    <div className="flex gap-6 h-screen">
+    <div className="flex gap-6 h-full">
       {/* Feed Information Column */}
-      <div className="w-1/4 flex flex-col gap-6 p-6 bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg">
+      <DescriptionColumn>
         <div className="flex flex-col gap-4">
           {playlistModel.images[0] && (
             <div className="flex flex-col items-center gap-4 justify-center">
@@ -112,14 +114,14 @@ export default function YoutubePlaylist({
             </div>
           </div>
         </div>
-      </div>
+      </DescriptionColumn>
       {/* Player Column */}
-      <div className="w-full flex flex-col p-6">
+      <ContentColumn>
         <YoutubePlaylistPlayer
           playlist={playlistModel}
           onApiChange={handleApiChange}
         />
-      </div>
+      </ContentColumn>
     </div>
   );
 }

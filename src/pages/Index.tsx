@@ -1,19 +1,31 @@
-import MainLayout from "@/components/layouts/MainLayout";
+import { useRSSFeed } from "@/api/rss-feed";
+import AudioFeed from "@/components/AudioFeed";
+import Thumbnail from "@/components/ui/Thumbnail";
+import { Tabs } from "@/components/tabs/Tabs";
+import MainLayout from "@/components/ui/MainLayout";
+import LoadingSpinner from "@/components/ui/Spinner";
 import YoutubePlaylist from "@/components/YoutubePlaylist";
+import { Channel } from "@/types/rss-feed";
 
 const Index = () => {
-  // const jogabilidadeEntity = {
-  //   feeds: [
-  //     "https://jogabilida.de/category/podcasts/podcast-games/feed/podcast/",
-  //     "https://jogabilida.de/category/podcasts/podcast-naogames/feed/podcast/",
-  //   ],
-  // };
+  const jogabilidadeEntity = {
+    feeds: [
+      "https://jogabilida.de/category/podcasts/podcast-games/feed/podcast/",
+      "https://jogabilida.de/category/podcasts/podcast-naogames/feed/podcast/",
+    ],
+  };
 
-  // const {
-  //   data: feed,
-  //   isLoading,
-  //   error,
-  // } = useRSSFeed(jogabilidadeEntity.feeds[0]);
+  const {
+    data: feedGames,
+    isLoading: isLoadingGames,
+    error: errorGames,
+  } = useRSSFeed(jogabilidadeEntity.feeds[0]);
+
+  const {
+    data: feedNaoGames,
+    isLoading: isLoadingNaoGames,
+    error: errorNaoGames,
+  } = useRSSFeed(jogabilidadeEntity.feeds[1]);
 
   const verticeYoutubePlaylist = {
     title: "VÉRTICE - YouTube",
@@ -30,30 +42,72 @@ const Index = () => {
     source: "jsonlink",
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <MainLayout>
-  //       <LoadingSpinner />
-  //     </MainLayout>
-  //   );
-  // }
+  const renderImage = (channel: Channel) => {
+    let images: string[] = [];
 
-  // if (!feed || error) {
-  //   return (
-  //     <MainLayout>
-  //       <div className="p-4">Erro ao carregar</div>
-  //     </MainLayout>
-  //   );
-  // }
+    if (channel.image) {
+      if (Array.isArray(channel.image)) {
+        images = channel.image.map((i) => i._href ?? i.url);
+      } else {
+        images = [channel.image._href ?? channel.image.url];
+      }
+    }
+
+    return <Thumbnail image={images} imageIndex={2} alt={channel.title} />;
+  };
 
   return (
     <MainLayout>
-      <div className="flex">
-        <div className="w-full">
+      <Tabs.Root defaultValue="feed-games">
+        <Tabs.List ariaLabel="feeds">
+          <Tabs.Trigger value="feed-games">
+            {feedGames ? (
+              renderImage(feedGames.rss.channel)
+            ) : (
+              <LoadingSpinner />
+            )}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="feed-nao-games">
+            {feedNaoGames ? (
+              renderImage(feedNaoGames.rss.channel)
+            ) : (
+              <LoadingSpinner />
+            )}
+          </Tabs.Trigger>
+          <Tabs.Trigger value="vertice-playlist">
+            {verticeYoutubePlaylist ? (
+              <Thumbnail
+                image={verticeYoutubePlaylist.images}
+                imageIndex={0}
+                alt={verticeYoutubePlaylist.title}
+              />
+            ) : (
+              <LoadingSpinner />
+            )}
+          </Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="vertice-playlist">
           <YoutubePlaylist playlistModel={verticeYoutubePlaylist} />
-          {/* <AudioFeed feed={feed} /> */}
-        </div>
-      </div>
+        </Tabs.Content>
+        <Tabs.Content value="feed-games">
+          {isLoadingGames ? (
+            <LoadingSpinner />
+          ) : !feedGames || errorGames ? (
+            <div className="p-4">Erro ao carregar</div>
+          ) : (
+            <AudioFeed feed={feedGames} />
+          )}
+        </Tabs.Content>
+        <Tabs.Content value="feed-nao-games">
+          {isLoadingNaoGames ? (
+            <LoadingSpinner />
+          ) : !feedNaoGames || errorNaoGames ? (
+            <div className="p-4">Erro ao carregar</div>
+          ) : (
+            <AudioFeed feed={feedNaoGames} />
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
     </MainLayout>
   );
 };

@@ -1,12 +1,10 @@
 // biome-ignore lint/style/useImportType:
+import { PodcastFeedItem } from "@/types/rss-feed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import InterativeProgressBar from "./InterativeProgressBar";
-import PlayPauseButton from "./PlayPauseButton";
-import VolumeControl from "./VolumeControl";
-import ElapsedDuration from "./ElapsedDuration";
+import { useLocation } from "react-router-dom";
+import ProgressBar from "./ProgressBar";
 import Settings from "./Settings";
-import { PodcastFeedItem } from "@/types/rss-feed";
 
 const initialState = {
   src: "",
@@ -26,15 +24,69 @@ const initialState = {
   playedSeconds: 0,
 };
 
-type PlayerState = Omit<typeof initialState, "src"> & {
+export type PlayerState = Omit<typeof initialState, "src"> & {
   src?: string;
 };
+
+function timeStringToSeconds(timeString: string): number {
+  // Split the time string into parts
+  const parts = timeString.split(":");
+
+  // Handle different formats (HH:MM:SS, MM:SS, SS)
+  let hours = 0,
+    minutes = 0,
+    seconds = 0;
+
+  if (parts.length === 3) {
+    // Format: HH:MM:SS
+    hours = parseInt(parts[0], 10);
+    minutes = parseInt(parts[1], 10);
+    seconds = parseInt(parts[2], 10);
+  } else if (parts.length === 2) {
+    // Format: MM:SS
+    minutes = parseInt(parts[0], 10);
+    seconds = parseInt(parts[1], 10);
+  } else if (parts.length === 1) {
+    // Format: SS
+    seconds = parseInt(parts[0], 10);
+  } else {
+    throw new Error("Invalid time format. Expected HH:MM:SS, MM:SS, or SS");
+  }
+
+  // Validate the numbers
+  if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+    throw new Error("Time components must be valid numbers");
+  }
+
+  if (minutes >= 60 || seconds >= 60) {
+    throw new Error("Minutes and seconds must be less than 60");
+  }
+
+  // Calculate total seconds
+  return hours * 3600 + minutes * 60 + seconds;
+}
 
 const AudioPlayer = ({ podcast }: { podcast?: PodcastFeedItem }) => {
   const playerRef = useRef<HTMLVideoElement | null>(null);
   const [state, setState] = useState<PlayerState>(initialState);
   const [lastSetVolume, setLastSetVolume] = useState<number>(1);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    // This effect runs whenever the location (including hash) changes
+    const player = playerRef.current;
+    const timestamp = location.hash.split("#timestamp=")[1];
+    if (player && !isNaN(player.duration) && timestamp) {
+      const seconds = timeStringToSeconds(timestamp);
+      player.currentTime = seconds;
+      setState((prevState) => ({
+        ...prevState,
+        played: seconds,
+        playing: true,
+      }));
+    }
+  }, [location]);
 
   useEffect(() => {
     const url = podcast?.enclosure?.url || podcast?.enclosure?._url;
@@ -180,9 +232,6 @@ const AudioPlayer = ({ podcast }: { podcast?: PodcastFeedItem }) => {
     volume,
     muted,
     loop,
-    played,
-    loaded,
-    duration,
     playbackRate,
     pip,
   } = state;
@@ -218,32 +267,30 @@ const AudioPlayer = ({ podcast }: { podcast?: PodcastFeedItem }) => {
             onProgress={handleProgress}
             onDurationChange={handleDurationChange}
           />
-          <div className="w-full flex flex-col relative">
-            <InterativeProgressBar
-              loaded={loaded}
-              played={played}
-              onMouseDown={handleSeekMouseDown}
-              onChange={handleSeekChange}
-              onMouseUp={handleSeekMouseUp}
-            />
-            <div className="flex items-center gap-2 p-2 bg-black/20">
-              <PlayPauseButton playing={playing} onToggle={handlePlayPause} />
-              <VolumeControl
-                volume={volume}
-                muted={muted}
-                onToggleMuted={handleToggleMuted}
-                onChange={handleVolumeChange}
-              />
-              <ElapsedDuration duration={duration} played={played} />
-              <div className="grow" />
+          <ProgressBar
+            playerState={state}
+            handlePlayPause={handlePlayPause}
+            handleSeekChange={handleSeekChange}
+            handleSeekMouseDown={handleSeekMouseDown}
+            handleSeekMouseUp={handleSeekMouseUp}
+            handleToggleMuted={handleToggleMuted}
+            handleVolumeChange={handleVolumeChange}
+            settings={
               <Settings
                 open={openSettings}
                 onToggle={handleOpenSettings}
                 playbackRate={playbackRate}
                 onSetPlaybackRate={handleSetPlaybackRate}
               />
-            </div>
-          </div>
+            }
+          >
+            <span
+              title={`Now Playing: ${podcast?.title}`}
+              className="text-white flex gap-1 w-64 p-2"
+            >
+              Now Playing: <strong>{podcast?.title}</strong>
+            </span>
+          </ProgressBar>
         </div>
       </section>
     </div>
