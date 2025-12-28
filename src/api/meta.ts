@@ -25,6 +25,7 @@ export interface PageMeta {
   description?: string | null;
   image?: string | null;
   html?: string;
+  error?: string;
 }
 
 /**
@@ -34,70 +35,31 @@ export interface PageMeta {
 export const fetchPageMeta = async (url: string): Promise<PageMeta> => {
   // Try YouTube oEmbed for watch URLs first — this avoids CORS and scraping.
   try {
-    const isYouTube = /(?:youtube\.com\/watch|youtu\.be\/)/.test(url);
-    if (isYouTube) {
-      const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
-        url
-      )}&format=json`;
-      const oeRes = await fetch(oembedUrl);
-      if (oeRes.ok) {
-        const oe = await oeRes.json();
-        return {
-          url,
-          title: oe.title ?? null,
-          description: (oe.author_name ? `By ${oe.author_name}` : null) ?? null,
-          image: oe.thumbnail_url ?? null,
-          html: oe.html ?? undefined,
-        } as PageMeta;
-      }
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
+      url
+    )}&format=json`;
+    const oeRes = await fetch(oembedUrl);
+    if (oeRes.ok) {
+      const oe = await oeRes.json();
+      return {
+        url,
+        title: oe.title ?? null,
+        description: (oe.author_name ? `By ${oe.author_name}` : null) ?? null,
+        image: oe.thumbnail_url ?? null,
+        html: oe.html ?? undefined,
+      } as PageMeta;
+    } else {
+      return {
+        url,
+        error: oeRes.statusText,
+      } as PageMeta;
     }
   } catch (e) {
-    // ignore and fall back to scraping via a CORS-friendly proxy below
-    // (some environments may still block oEmbed requests)
-    // console.warn('oEmbed fetch failed', e);
+    return {
+      url,
+      error: e,
+    } as PageMeta;
   }
-
-  // Fallback: fetch the raw HTML via a public CORS proxy (only for development).
-  // Recommended for production: implement a server-side proxy or use YouTube Data API.
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-    url
-  )}`;
-  const response = await fetch(proxyUrl);
-  if (!response.ok)
-    throw new Error(`Failed to fetch proxied page: ${response.statusText}`);
-  const html = await response.text();
-
-  // Parse HTML in browser environment
-  let title: string | null = null;
-  let description: string | null = null;
-  let image: string | null = null;
-
-  try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    const ogTitle = doc.querySelector(
-      'meta[property="og:title"]'
-    ) as HTMLMetaElement | null;
-    const ogDescription = doc.querySelector(
-      'meta[property="og:description"]'
-    ) as HTMLMetaElement | null;
-    const ogImage = doc.querySelector(
-      'meta[property="og:image"]'
-    ) as HTMLMetaElement | null;
-    const docTitle = doc.querySelector("title");
-
-    title = ogTitle?.content ?? docTitle?.textContent ?? null;
-    description =
-      ogDescription?.content ??
-      (doc.querySelector('meta[name="description"]') as HTMLMetaElement | null)
-        ?.content ??
-      null;
-    image = ogImage?.content ?? null;
-  } catch (e) {
-    console.warn("Failed to parse HTML for page meta", e);
-  }
-
-  return { url, title, description, image, html };
 };
 
 /**
@@ -106,7 +68,7 @@ export const fetchPageMeta = async (url: string): Promise<PageMeta> => {
  * @param enabled - Optional flag to enable/disable the query
  * @returns Query result with data, isLoading, error, etc.
  */
-export const useMetaFetch = (url: string | null, enabled = true) => {
+export const useMetaFetch = (url: string, enabled = true) => {
   return useQuery({
     queryKey: ["youtube-meta", url],
     queryFn: () => fetchMetaXml(url!),

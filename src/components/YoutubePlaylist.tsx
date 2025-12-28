@@ -36,8 +36,6 @@ export default function YoutubePlaylist({
         setPlaylistArray(api.getPlaylist().slice(0, 5));
       }
     }
-    // For debugging you can uncomment the next line to see the API
-    // console.log('youtube api changed', api);
   };
 
   const renderImage = (image: YoutubePlaylistModel["images"], alt: string) => {

@@ -28,65 +28,11 @@ export type PlayerState = Omit<typeof initialState, "src"> & {
   src?: string;
 };
 
-function timeStringToSeconds(timeString: string): number {
-  // Split the time string into parts
-  const parts = timeString.split(":");
-
-  // Handle different formats (HH:MM:SS, MM:SS, SS)
-  let hours = 0,
-    minutes = 0,
-    seconds = 0;
-
-  if (parts.length === 3) {
-    // Format: HH:MM:SS
-    hours = parseInt(parts[0], 10);
-    minutes = parseInt(parts[1], 10);
-    seconds = parseInt(parts[2], 10);
-  } else if (parts.length === 2) {
-    // Format: MM:SS
-    minutes = parseInt(parts[0], 10);
-    seconds = parseInt(parts[1], 10);
-  } else if (parts.length === 1) {
-    // Format: SS
-    seconds = parseInt(parts[0], 10);
-  } else {
-    throw new Error("Invalid time format. Expected HH:MM:SS, MM:SS, or SS");
-  }
-
-  // Validate the numbers
-  if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-    throw new Error("Time components must be valid numbers");
-  }
-
-  if (minutes >= 60 || seconds >= 60) {
-    throw new Error("Minutes and seconds must be less than 60");
-  }
-
-  // Calculate total seconds
-  return hours * 3600 + minutes * 60 + seconds;
-}
-
 const AudioPlayer = ({ podcast }: { podcast?: PodcastFeedItem }) => {
   const playerRef = useRef<HTMLVideoElement | null>(null);
   const [state, setState] = useState<PlayerState>(initialState);
   const [lastSetVolume, setLastSetVolume] = useState<number>(1);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    // This effect runs whenever the location (including hash) changes
-    const player = playerRef.current;
-    const timestamp = location.hash.split("#timestamp=")[1];
-    if (player && !isNaN(player.duration) && timestamp) {
-      const seconds = timeStringToSeconds(timestamp);
-      player.currentTime = seconds;
-      setState((prevState) => ({
-        ...prevState,
-        played: seconds,
-        playing: true,
-      }));
-    }
-  }, [location]);
 
   useEffect(() => {
     const url = podcast?.enclosure?.url || podcast?.enclosure?._url;
@@ -239,7 +185,7 @@ const AudioPlayer = ({ podcast }: { podcast?: PodcastFeedItem }) => {
   return (
     <div className="flex flex-row w-full">
       <section className="flex-1 w-1/2">
-        <div className="player-wrapper relative bg-gray-300 w-full">
+        <div className="player-wrapper relative bg-gray-800 w-full">
           <ReactPlayer
             ref={setPlayerRef}
             className="react-player"

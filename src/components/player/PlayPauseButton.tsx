@@ -5,12 +5,18 @@ type Props = {
   playing: boolean;
   onToggle: () => void;
   iconSize?: number;
+  className?: string;
 };
 
-const PlayPauseButton = ({ playing, onToggle, iconSize }: Props) => {
+const PlayPauseButton = ({
+  playing,
+  onToggle,
+  iconSize,
+  className = "",
+}: Props) => {
   return (
     <button
-      className="bg-black/10 hover:bg-black/20 p-2 rounded-2xl"
+      className={`bg-black/10 hover:bg-black/20 p-2 rounded-2xl ${className}`}
       type="button"
       onClick={onToggle}
     >

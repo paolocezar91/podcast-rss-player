@@ -1,8 +1,7 @@
 import { PodcastFeedItem, RSSFeedModel } from "@/types/rss-feed";
 import DOMPurify from "dompurify";
 import { useMemo, useState } from "react";
-import AudioPlayer from "./player/AudioPlayer";
-import PlayPauseButton from "./player/PlayPauseButton";
+import ConnectedPlayPauseButton from "./player/ConnectedPlayerPauseButton";
 import { SortingDir, SortMapping, sortResources } from "./table/sorting";
 import Table from "./table/table";
 import { ContentColumn } from "./ui/content/ContentColumn";
@@ -82,7 +81,9 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
       <tr
         key={idx}
         className={`${
-          !isLast ? "border-solid border-foreground border-b-2 pointer" : ""
+          !isLast
+            ? "border-solid border-foreground border-b-2 cursor-pointer bg-gray-100 hover:bg-gray-300/50"
+            : ""
         }`}
         onClick={() => setSelectedPodcast(item)}
       >
@@ -93,18 +94,14 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
           {`${date.getUTCDate()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`}
         </td>
         <td className="px-1 py-2">
-          <PlayPauseButton
-            iconSize={12}
-            playing
-            onToggle={() => setSelectedPodcast(item)}
-          />
+          <ConnectedPlayPauseButton podcast={item} iconSize={12} />
         </td>
       </tr>
     );
   });
 
   return (
-    <div className="flex gap-4 h-full">
+    <div className="flex gap-4 h-full relative">
       {/* Feed Information Column */}
       <DescriptionColumn>
         {/* Feed Header */}
@@ -138,12 +135,15 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
             <div className="w-full mt-4 p-4 bg-white rounded-t-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
               <div className="flex flex-col gap-3">
                 <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Episódio selecionado
-                  </h3>
-                  <h1 className="text-lg font-semibold text-gray-900 mt-1">
-                    {selectedPodcast.title}
-                  </h1>
+                  <div className="flex gap-2 items-center">
+                    <ConnectedPlayPauseButton
+                      podcast={selectedPodcast}
+                      iconSize={16}
+                    />
+                    <h1 className="text-lg font-semibold text-gray-900 mt-1">
+                      {selectedPodcast.title}
+                    </h1>
+                  </div>
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -182,7 +182,6 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
                 </a>
               </div>
             </div>
-            <AudioPlayer podcast={selectedPodcast} />
           </>
         </ContentColumn>
       )}

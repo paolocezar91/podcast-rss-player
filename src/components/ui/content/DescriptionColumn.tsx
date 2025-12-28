@@ -15,7 +15,7 @@ export default function DescriptionColumn({
     <>
       <div
         className={`
-          relative h-full gap-2 bg-gray-100 transition-[width] ease-in-out
+          h-full gap-2 bg-gray-100 transition-[width] ease-in-out
           ${collapsed ? "w-0 opacity-0" : "w-1/4 p-2 opacity-100 flex flex-col"}
         `}
       >
@@ -40,7 +40,7 @@ export const CollapseToggle = ({
   return (
     <button
       onClick={onToggle}
-      className="absolute bottom-8 left-10 transform z-10 
+      className="absolute transform z-10 bottom-8 -left-4
                  bg-gray-200 hover:bg-gray-300 p-2 rounded-full shadow-md 
                  transition-colors duration-200"
       aria-label={isCollapsed ? "Expand description" : "Collapse description"}

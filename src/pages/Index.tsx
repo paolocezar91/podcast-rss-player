@@ -1,10 +1,13 @@
 import { useRSSFeed } from "@/api/rss-feed";
+import { useWordPressPostsByCategory } from "@/api/wp-json/posts-category";
 import AudioFeed from "@/components/AudioFeed";
-import Thumbnail from "@/components/ui/Thumbnail";
 import { Tabs } from "@/components/tabs/Tabs";
 import MainLayout from "@/components/ui/MainLayout";
 import LoadingSpinner from "@/components/ui/Spinner";
+import Thumbnail from "@/components/ui/Thumbnail";
+import WordpressPosts from "@/components/wp/WordpressPosts";
 import YoutubePlaylist from "@/components/YoutubePlaylist";
+import { AudioPlayerProvider } from "@/context/AudioPlayerProvider";
 import { Channel } from "@/types/rss-feed";
 
 const Index = () => {
@@ -26,6 +29,11 @@ const Index = () => {
     isLoading: isLoadingNaoGames,
     error: errorNaoGames,
   } = useRSSFeed(jogabilidadeEntity.feeds[1]);
+
+  const dashWPQuery = useWordPressPostsByCategory("410");
+  const dashWP = dashWPQuery.data?.pages.flat();
+  const isLoadingDashWP = dashWPQuery.isLoading;
+  const errorDashWP = dashWPQuery.error;
 
   const verticeYoutubePlaylist = {
     title: "VÉRTICE - YouTube",
@@ -57,58 +65,87 @@ const Index = () => {
   };
 
   return (
-    <MainLayout>
-      <Tabs.Root defaultValue="feed-games">
-        <Tabs.List ariaLabel="feeds">
-          <Tabs.Trigger value="feed-games">
-            {feedGames ? (
-              renderImage(feedGames.rss.channel)
-            ) : (
+    <AudioPlayerProvider>
+      <MainLayout>
+        <Tabs.Root defaultValue="wordpress-posts">
+          <Tabs.List ariaLabel="feeds">
+            <Tabs.Trigger value="wordpress-posts">
+              {dashWP ? (
+                <Thumbnail
+                  image={
+                    dashWP[0]?.featuredmedia ? [dashWP[0].featuredmedia] : []
+                  }
+                  imageIndex={0}
+                  alt="WordPress Posts"
+                />
+              ) : (
+                <LoadingSpinner />
+              )}
+            </Tabs.Trigger>
+            <Tabs.Trigger value="feed-games">
+              {feedGames ? (
+                renderImage(feedGames.rss.channel)
+              ) : (
+                <LoadingSpinner />
+              )}
+            </Tabs.Trigger>
+            <Tabs.Trigger value="feed-nao-games">
+              {feedNaoGames ? (
+                renderImage(feedNaoGames.rss.channel)
+              ) : (
+                <LoadingSpinner />
+              )}
+            </Tabs.Trigger>
+            <Tabs.Trigger value="vertice-playlist">
+              {verticeYoutubePlaylist ? (
+                <Thumbnail
+                  image={verticeYoutubePlaylist.images}
+                  imageIndex={0}
+                  alt={verticeYoutubePlaylist.title}
+                />
+              ) : (
+                <LoadingSpinner />
+              )}
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="wordpress-posts">
+            {isLoadingDashWP ? (
               <LoadingSpinner />
-            )}
-          </Tabs.Trigger>
-          <Tabs.Trigger value="feed-nao-games">
-            {feedNaoGames ? (
-              renderImage(feedNaoGames.rss.channel)
+            ) : !dashWP || errorDashWP ? (
+              <div className="p-4">Erro ao carregar posts</div>
             ) : (
-              <LoadingSpinner />
-            )}
-          </Tabs.Trigger>
-          <Tabs.Trigger value="vertice-playlist">
-            {verticeYoutubePlaylist ? (
-              <Thumbnail
-                image={verticeYoutubePlaylist.images}
-                imageIndex={0}
-                alt={verticeYoutubePlaylist.title}
+              <WordpressPosts
+                title="Dash Podcast"
+                postsQuery={dashWPQuery}
+                isLoading={isLoadingDashWP}
+                error={!!errorDashWP}
               />
-            ) : (
-              <LoadingSpinner />
             )}
-          </Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="vertice-playlist">
-          <YoutubePlaylist playlistModel={verticeYoutubePlaylist} />
-        </Tabs.Content>
-        <Tabs.Content value="feed-games">
-          {isLoadingGames ? (
-            <LoadingSpinner />
-          ) : !feedGames || errorGames ? (
-            <div className="p-4">Erro ao carregar</div>
-          ) : (
-            <AudioFeed feed={feedGames} />
-          )}
-        </Tabs.Content>
-        <Tabs.Content value="feed-nao-games">
-          {isLoadingNaoGames ? (
-            <LoadingSpinner />
-          ) : !feedNaoGames || errorNaoGames ? (
-            <div className="p-4">Erro ao carregar</div>
-          ) : (
-            <AudioFeed feed={feedNaoGames} />
-          )}
-        </Tabs.Content>
-      </Tabs.Root>
-    </MainLayout>
+          </Tabs.Content>
+          <Tabs.Content value="vertice-playlist">
+            <YoutubePlaylist playlistModel={verticeYoutubePlaylist} />
+          </Tabs.Content>
+          <Tabs.Content value="feed-games">
+            {isLoadingGames ? (
+              <LoadingSpinner />
+            ) : !feedGames || errorGames ? (
+              <div className="p-4">Erro ao carregar</div>
+            ) : (
+              <AudioFeed feed={feedGames} />
+            )}
+          </Tabs.Content>
+          <Tabs.Content value="feed-nao-games">
+            {isLoadingNaoGames ? (
+              <LoadingSpinner />
+            ) : !feedNaoGames || errorNaoGames ? (
+              <div className="p-4">Erro ao carregar</div>
+            ) : (
+              <AudioFeed feed={feedNaoGames} />
+            )}
+          </Tabs.Content>
+        </Tabs.Root>
+      </MainLayout>
+    </AudioPlayerProvider>
   );
 };
 
