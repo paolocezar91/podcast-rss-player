@@ -7,3 +7,8 @@ export interface WordpressPost {
   featuredmedia: string;
   class_list: string[];
 }
+
+export interface WordpressEntity {
+  category: number;
+  title: string;
+}

@@ -1,5 +1,5 @@
 // biome-ignore lint/style/useImportType:
-import { YoutubePlayerElement, YoutubePlaylistModel } from "@/types/youtube";
+import { YoutubePlayerElement, YoutubePlaylistEntity } from "@/types/youtube";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import ProgressBar from "./ProgressBar";
@@ -30,7 +30,7 @@ const YoutubePlaylistPlayer = ({
   playlist,
   onApiChange,
 }: {
-  playlist: YoutubePlaylistModel;
+  playlist: YoutubePlaylistEntity;
   onApiChange?: (api: YT.Player | null) => void;
 }) => {
   const playerRef = useRef<YoutubePlayerElement | null>(null);

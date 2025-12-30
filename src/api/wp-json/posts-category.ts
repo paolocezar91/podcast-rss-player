@@ -50,6 +50,18 @@ function extractMp3Url(htmlString: string) {
   return mp3Url;
 }
 
+// Decode HTML entities like &#8217; into their character equivalents
+function decodeHtmlEntities(htmlString: string) {
+  if (!htmlString) return htmlString;
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    return doc.documentElement.textContent || "";
+  } catch (e) {
+    return htmlString;
+  }
+}
+
 // Function to process and flatten WordPress posts
 const processWordPressPosts = (
   posts: Record<string, any>[]
@@ -59,9 +71,11 @@ const processWordPressPosts = (
       id: post.id as string,
       date: post.date as string,
       link: extractMp3Url(post.content?.rendered || post.content) as string,
-      title: (post.title?.rendered || post.title) as string,
+      title: decodeHtmlEntities(
+        (post.title?.rendered || post.title) as string
+      ) as string,
       content: (post.content?.rendered || post.content) as string,
-      featuredmedia: post["_links"]["wp:featuredmedia"][0].href as string,
+      featuredmedia: post["_links"]?.["wp:featuredmedia"]?.[0]?.href as string,
       class_list: post.class_list as string[],
     };
   });
@@ -84,21 +98,18 @@ const fetchWordPressPostsByCategory = async (categoryId: string, page = 1) => {
 
 // Infinite hook with category parameter
 export const useWordPressPostsByCategory = (categoryId: string) => {
-  return useInfiniteQuery(
-    ["wordpress-posts", categoryId],
-    async ({ pageParam = 1 }) => {
+  return useInfiniteQuery({
+    queryKey: ["wordpress-posts", categoryId],
+    queryFn: async ({ pageParam = 1 }) => {
       return await fetchWordPressPostsByCategory(categoryId, pageParam);
     },
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (!lastPage) return undefined;
-        // If the last page returned less than PER_PAGE items, there's no next page
-        if (lastPage.length < PER_PAGE) return undefined;
-        return allPages.length + 1; // next page number
-      },
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      enabled: !!categoryId,
-    }
-  );
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage) return undefined;
+      // If the last page returned less than PER_PAGE items, there's no next page
+      if (lastPage.length < PER_PAGE) return undefined;
+      return allPages.length + 1; // next page number
+    },
+    initialPageParam: 1,
+    enabled: !!categoryId,
+  });
 };

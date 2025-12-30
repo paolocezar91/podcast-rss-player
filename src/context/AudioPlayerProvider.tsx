@@ -44,6 +44,7 @@ interface AudioPlayerContextType {
   seekByPercentage: (percentage: number) => void;
   isCurrentPost: (item: WordpressPost) => boolean;
   isCurrentPodcast: (item: PodcastFeedItem) => boolean;
+  toggleShow: (value?: boolean) => void;
 }
 
 const initialState: AudioPlayerState = {
@@ -73,6 +74,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [state, setState] = useState<AudioPlayerState>(initialState);
   const [lastSetVolume, setLastSetVolume] = useState<number>(1);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const [show, setShow] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -304,6 +306,14 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     [setPlaybackRate]
   );
 
+  const toggleShow = useCallback(
+    (value?: boolean) => {
+      setShow((prev) => value ?? !prev);
+      pause();
+    },
+    [setShow, pause]
+  );
+
   const contextValue: AudioPlayerContextType = {
     state,
     play,
@@ -316,6 +326,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     seekByPercentage,
     isCurrentPodcast,
     isCurrentPost,
+    toggleShow,
   };
 
   return (
@@ -323,7 +334,11 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
       {/* Global Audio Player */}
       {
-        <div className="flex flex-row w-full fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <div
+          className={`flex flex-row w-full fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 ${
+            !show ? "hidden" : ""
+          }`}
+        >
           <div className="player-wrapper relative bg-gray-300 w-full">
             {state.src && (
               <ReactPlayer

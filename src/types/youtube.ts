@@ -1,15 +1,10 @@
 import type YouTubeVideoElement from "youtube-video-element";
 
-export interface YoutubePlaylistModel {
+export interface YoutubePlaylistEntity {
   title: string;
   description: string;
-  images: string[];
-  sitename: string;
-  favicon: string;
-  duration: number;
-  domain: string;
+  image: string;
   url: string;
-  source: string;
 }
 
 export type YoutubePlayerElement = YouTubeVideoElement & {

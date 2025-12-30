@@ -1,18 +1,24 @@
 import { usePageMeta } from "@/api/meta";
-import { YoutubePlaylistModel } from "@/types/youtube";
+import { YoutubePlaylistEntity } from "@/types/youtube";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import YoutubePlaylistPlayer from "./player/YoutubePlaylistPlayer";
 import DescriptionColumn from "./ui/content/DescriptionColumn";
 import { ContentColumn } from "./ui/content/ContentColumn";
+import { useAudioPlayer } from "@/context/AudioPlayerProvider";
 
 export default function YoutubePlaylist({
-  playlistModel,
+  playlist,
 }: {
-  playlistModel: YoutubePlaylistModel;
+  playlist: YoutubePlaylistEntity;
 }) {
   const youtubeApiRef = useRef<YT.Player | null>(null);
   const [playlistArray, setPlaylistArray] = useState<string[]>([]);
+  const { toggleShow } = useAudioPlayer();
+
+  useEffect(() => {
+    toggleShow(false);
+  }, [toggleShow]);
 
   // Fetch page meta (OG tags) for the first video in the playlist array.
   const firstVideoUrl = playlistArray[0]
@@ -38,37 +44,28 @@ export default function YoutubePlaylist({
     }
   };
 
-  const renderImage = (image: YoutubePlaylistModel["images"], alt: string) => {
-    let src: string = "";
-    if (image) {
-      if (Array.isArray(image)) {
-        src = image[0];
-      }
-    }
-    return (
-      <img
-        src={src}
-        alt={alt}
-        className="w-48 h-48 object-cover rounded-lg shadow-lg"
-      />
-    );
-  };
+  debugger;
+
   return (
-    <div className="flex gap-6 h-full">
+    <div className="flex gap-4 h-full">
       {/* Feed Information Column */}
       <DescriptionColumn>
         <div className="flex flex-col gap-4">
-          {playlistModel.images[0] && (
-            <div className="flex flex-col items-center gap-4 justify-center">
-              {renderImage(playlistModel.images, playlistModel.title)}
-              <h1 className="text-3xl font-bold text-gray-900">
-                {playlistModel.title}
-              </h1>
-            </div>
-          )}
+          <div className="flex flex-col items-center gap-4 justify-center">
+            {playlist.image && (
+              <img
+                src={playlist.image}
+                alt={playlist.title}
+                className="w-48 h-48 object-cover rounded-lg shadow-lg"
+              />
+            )}
+            <h1 className="text-3xl font-bold text-gray-900">
+              {playlist.title}
+            </h1>
+          </div>
           <div className="flex flex-col gap-2">
             <p className="text-gray-600 text-sm leading-relaxed text-center">
-              {playlistModel.description}
+              {playlist.description}
             </p>
           </div>
           {pageMeta?.title && (
@@ -116,7 +113,7 @@ export default function YoutubePlaylist({
       {/* Player Column */}
       <ContentColumn>
         <YoutubePlaylistPlayer
-          playlist={playlistModel}
+          playlist={playlist}
           onApiChange={handleApiChange}
         />
       </ContentColumn>

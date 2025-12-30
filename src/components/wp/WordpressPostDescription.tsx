@@ -1,11 +1,9 @@
 // WordPressPosts.tsx
 import { WordpressPost } from "@/types/wp";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ConnectedPlayPauseButton from "../player/ConnectedPlayerPauseButton";
 import { SortingDir, SortMapping, sortResources } from "../table/sorting";
 import Table from "../table/table";
-import Thumbnail from "../ui/Thumbnail";
-import { useAudioPlayer } from "@/context/AudioPlayerProvider";
 
 export type SortKey = "title" | "date";
 
@@ -24,8 +22,6 @@ export default function WordpressPostDescription({
   hasNextPage?: boolean;
   isFetchingNextPage?: boolean;
 }) {
-  const { state } = useAudioPlayer();
-
   const [sorting] = useState<SortingDir<SortKey>[]>([
     { dir: "-", key: "date" },
   ]);
@@ -101,12 +97,17 @@ export default function WordpressPostDescription({
     <>
       <div className="flex flex-col grow gap-4">
         {posts.length > 0 && (
-          <div className="flex flex-col items-center gap-4 mt-2 justify-center">
-            <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-            <h2 className="text-md font-bold text-gray-700">
-              {state.currentMedia?.title}
-            </h2>
-          </div>
+          <>
+            <div className="flex flex-col items-center gap-4 mt-2 justify-center">
+              <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+            </div>
+            <div className="p-4">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+              praesentium sed facere eaque eveniet inventore, earum architecto,
+              quo vel ullam tempora animi facilis quae excepturi nostrum. Minus
+              dolor eligendi deleniti.
+            </div>
+          </>
         )}
       </div>
 

@@ -37,37 +37,36 @@ export default function WordpressPostContent({
         </div>
         <div>
           <img src={mediaUrl} alt={selectedPost.title} />
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Publicado em
+              </p>
+              <p className="text-sm text-gray-900 font-medium">
+                {new Date(selectedPost.date).toLocaleDateString("pt-BR")}
+              </p>
+            </div>
+          </div>
           <div
-            className="text-sm text-gray-600 mt-1 prose max-w-none"
+            className="
+              text-sm text-gray-600 mt-1 prose max-w-none
+              [&>p]:mb-4 [&>p]:text-normal
+              [&>h4]:mb-4 [&>h4]:text-lg [&>h4]:font-bold
+              [&>a]:hover:underline
+              [&>div]:hidden
+              [&>p:last-child]:hidden
+            "
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
+          <a
+            href={selectedPost.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2"
+          >
+            Ler post completo →
+          </a>
         </div>
-        <div className="grid grid-cols-2 gap-2 pt-2">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Publicado em
-            </p>
-            <p className="text-sm text-gray-900 font-medium">
-              {new Date(selectedPost.date).toLocaleDateString("pt-BR")}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Categorias
-            </p>
-            <p className="text-sm text-gray-900 font-medium">
-              {selectedPost.class_list.join(", ")}
-            </p>
-          </div>
-        </div>
-        <a
-          href={selectedPost.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2"
-        >
-          Ler post completo →
-        </a>
       </div>
     </div>
   );
