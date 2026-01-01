@@ -1,6 +1,7 @@
 import { useDebounce } from "@/hooks/use-debounces";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { twMerge as cn } from "tailwind-merge";
 
 // Description Column Component
 export default function DescriptionColumn({
@@ -13,15 +14,16 @@ export default function DescriptionColumn({
 
   return (
     <div
-      className={`relative transition-[width] ease-in-out ${
+      className={cn(
+        "relative transition-[width] ease-in-out max-w-[480px]",
         collapsed ? "w-0" : "w-1/3"
-      }`}
+      )}
     >
       <div
-        className={`
-          h-full gap-2 bg-gray-100
-          ${collapsed ? "w-0 opacity-0" : "p-2 opacity-100 flex flex-col"}
-        `}
+        className={cn(
+          "h-full gap-2 bg-gray-100",
+          collapsed ? "w-0 opacity-0" : "p-2 opacity-100 flex flex-col"
+        )}
       >
         {!debouncedCollapsed && children}
       </div>

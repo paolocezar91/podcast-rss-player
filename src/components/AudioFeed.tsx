@@ -7,8 +7,9 @@ import Table from "./table/table";
 import { ContentColumn } from "./ui/content/ContentColumn";
 import DescriptionColumn from "./ui/content/DescriptionColumn";
 import Thumbnail from "./ui/Thumbnail";
-export type SortKey = "name" | "pubDate" | "duration";
+import { twMerge as cn } from "tailwind-merge";
 
+export type SortKey = "name" | "pubDate" | "duration";
 function addTimestampLinks(htmlString: string) {
   // Regex to match timestamps in the format 00:00:00 followed by a colon and text
   const timestampRegex = /(<li>)(\d{2}:\d{2}:\d{2})(:\s*[^<]+)(<\/li>)/g;
@@ -80,11 +81,11 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
     return (
       <tr
         key={idx}
-        className={`${
+        className={cn(
           !isLast
             ? "border-solid border-foreground border-b-2 cursor-pointer bg-gray-100 hover:bg-gray-300/50"
             : ""
-        }`}
+        )}
         onClick={() => setSelectedPodcast(item)}
       >
         <td className="truncate max-w-[225px] px-1 py-2" title={item.title}>
@@ -132,7 +133,7 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
         <ContentColumn>
           <>
             {/* Episode Details */}
-            <div className="w-full mt-4 p-4 bg-white rounded-t-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
+            <div className="w-full mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
               <div className="flex flex-col gap-3">
                 <div>
                   <div className="flex gap-2 items-center">

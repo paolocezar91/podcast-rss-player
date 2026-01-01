@@ -2,7 +2,6 @@
 import { PodcastFeedItem } from "@/types/rss-feed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import { useLocation } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import Settings from "./Settings";
 

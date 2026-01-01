@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { twMerge as cn } from "tailwind-merge";
 
 // Type definitions
 interface TabsContextType {
@@ -53,7 +54,10 @@ const TabsRoot = ({
   return (
     <TabsContext.Provider value={{ activeTab, setActiveTab }}>
       <div
-        className={`flex w-full h-full w-min-52 bg-white rounded-lg border border-gray-200 ${className}`}
+        className={cn(
+          "flex w-full h-full w-min-52 bg-white rounded-lg border border-gray-200",
+          className
+        )}
       >
         {children}
       </div>
@@ -65,7 +69,10 @@ const TabsRoot = ({
 const TabsList = ({ children, className = "", ariaLabel }: TabsListProps) => {
   return (
     <div
-      className={`max-w-32 bg-gray-50 border-r border-gray-200 h-full ${className}`}
+      className={cn(
+        "max-w-32 bg-gray-50 border-r border-gray-200 h-full",
+        className
+      )}
       role="tablist"
       aria-label={ariaLabel}
     >
@@ -84,11 +91,13 @@ const TabsTrigger = ({ value, children, className = "" }: TabsTriggerProps) => {
       aria-selected={activeTab === value}
       aria-controls={`tab-content-${value}`}
       onClick={() => setActiveTab(value)}
-      className={`text-left rounded-lg transition-colors duration-200 w-24 h-24 ${
+      className={cn(
+        "text-left rounded-lg transition-colors duration-200 w-24 h-24",
         activeTab === value
           ? "bg-blue-500 text-white shadow-md"
-          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 opacity-70"
-      } ${className}`}
+          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 opacity-70",
+        className
+      )}
     >
       {children}
     </button>
@@ -109,7 +118,7 @@ const TabsContent = ({ value, children, className = "" }: TabsContentProps) => {
       role="tabpanel"
       id={`tab-content-${value}`}
       aria-labelledby={`tab-trigger-${value}`}
-      className={`w-full h-full ${className}`}
+      className={cn("w-full h-full", className)}
     >
       <div className="h-full">{children}</div>
     </div>

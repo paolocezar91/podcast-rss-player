@@ -1,5 +1,6 @@
 import React from "react";
 import { Pause, Play } from "lucide-react";
+import { twMerge as cn } from "tailwind-merge";
 
 type Props = {
   playing: boolean;
@@ -16,7 +17,7 @@ const PlayPauseButton = ({
 }: Props) => {
   return (
     <button
-      className={`bg-black/10 hover:bg-black/20 p-2 rounded-2xl ${className}`}
+      className={cn("bg-black/10 hover:bg-black/20 p-2 rounded-2xl", className)}
       type="button"
       onClick={onToggle}
     >

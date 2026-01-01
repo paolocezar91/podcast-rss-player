@@ -4,7 +4,7 @@ export const ContentColumn = ({
   children: React.ReactElement;
 }) => {
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center p-4">
+    <div className="w-full h-full flex flex-col justify-center items-center p-4 mx-auto max-w-[960px]">
       {children}
     </div>
   );

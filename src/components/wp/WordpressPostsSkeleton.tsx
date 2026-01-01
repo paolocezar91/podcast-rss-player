@@ -3,6 +3,7 @@ import Skeleton from "../ui/Skeleton";
 import { ContentColumn } from "../ui/content/ContentColumn";
 import DescriptionColumn from "../ui/content/DescriptionColumn";
 import Table from "../table/table";
+import { twMerge as cn } from "tailwind-merge";
 
 export default function WordpressPostsSkeleton() {
   const tableHeaders = (
@@ -16,11 +17,11 @@ export default function WordpressPostsSkeleton() {
   const rows = Array.from({ length: 20 }).map((_, idx) => (
     <tr
       key={idx}
-      className={`${
+      className={cn(
         idx !== 5
           ? "border-solid border-foreground border-b-2 cursor-pointer bg-gray-100 hover:bg-gray-300/50"
           : ""
-      }`}
+      )}
     >
       <td className="truncate max-w-[225px] px-1 py-2">
         <Skeleton className="h-4 w-40" />
@@ -64,7 +65,7 @@ export default function WordpressPostsSkeleton() {
       </DescriptionColumn>
 
       <ContentColumn>
-        <div className="w-full mt-4 p-4 bg-white rounded-t-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
+        <div className="w-full mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-3">
             <div>
               <div className="flex gap-2 items-center">

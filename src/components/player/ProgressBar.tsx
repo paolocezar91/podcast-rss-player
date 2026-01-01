@@ -50,9 +50,11 @@ export default function ProgressBar({
         />
         <ElapsedDuration duration={duration} played={played} />
         <div className="overflow-hidden flex bg-black/10 hover:bg-black/20 rounded-2xl">
-          <div className="animate-marquee flex items-center whitespace-nowrap">
-            {children}
-          </div>
+          {!!loaded && (
+            <div className="animate-marquee flex items-center whitespace-nowrap">
+              {children}
+            </div>
+          )}
           <div className="grow"></div>
         </div>
         <div className="grow" />

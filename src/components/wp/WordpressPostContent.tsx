@@ -26,7 +26,7 @@ export default function WordpressPostContent({
   }, [selectedPost?.content]);
 
   return (
-    <div className="w-full mt-4 p-4 bg-white rounded-t-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
+    <div className="w-full mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
       <div className="flex flex-col gap-3">
         <div>
           <div className="flex gap-2 items-center">

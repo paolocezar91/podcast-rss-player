@@ -1,3 +1,5 @@
+import { twMerge as cn } from "tailwind-merge";
+
 export default function Thumbnail({
   image,
   imageIndex = 0,
@@ -13,7 +15,7 @@ export default function Thumbnail({
     <img
       src={image[imageIndex]}
       alt={alt}
-      className={`rounded-lg shadow-lg ${className}`}
+      className={cn("rounded-lg shadow-lg", className)}
     />
   );
 }
