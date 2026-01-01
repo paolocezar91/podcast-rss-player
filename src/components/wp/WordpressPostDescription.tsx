@@ -2,8 +2,8 @@
 import { WordpressPost } from "@/types/wp";
 import { useEffect, useRef, useState } from "react";
 import ConnectedPlayPauseButton from "../player/ConnectedPlayerPauseButton";
-import { SortingDir, SortMapping, sortResources } from "../table/sorting";
-import Table from "../table/table";
+import { SortingDir, SortMapping, sortResources } from "../ui/table/sorting";
+import Table from "../ui/table/Table";
 
 export type SortKey = "title" | "date";
 

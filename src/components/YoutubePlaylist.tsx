@@ -44,8 +44,6 @@ export default function YoutubePlaylist({
     }
   };
 
-  debugger;
-
   return (
     <div className="flex gap-4 h-full">
       {/* Feed Information Column */}

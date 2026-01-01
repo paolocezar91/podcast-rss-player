@@ -1,7 +1,7 @@
 import { WordpressEntity } from "@/types/wp";
 import { YoutubePlaylistEntity } from "@/types/youtube";
 
-const jogabilidadeEntityWp: Record<string, WordpressEntity> = {
+const jogabilidadeGamesEntityWp: Record<string, WordpressEntity> = {
   "dash-wp": {
     category: 410,
     title: "Dash Podcast",
@@ -10,6 +10,8 @@ const jogabilidadeEntityWp: Record<string, WordpressEntity> = {
     category: 532,
     title: "Vértice",
   },
+};
+const jogabilidadeNaoGamesEntityWp: Record<string, WordpressEntity> = {
   "fora-da-caixa-wp": {
     category: 930,
     title: "Fora da Caixa",
@@ -23,7 +25,6 @@ const jogabilidadeEntityWp: Record<string, WordpressEntity> = {
     title: "J.A.C.K.",
   },
 };
-
 const jogabilidadeEntityYoutube: Record<string, YoutubePlaylistEntity> = {
   "vertice-youtube": {
     title: "VÉRTICE - YouTube (VOD)",
@@ -43,6 +44,7 @@ const jogabilidadeEntityYoutube: Record<string, YoutubePlaylistEntity> = {
 };
 
 export const jogabilidadeEntity = {
-  wp: jogabilidadeEntityWp,
+  "wp-games": jogabilidadeGamesEntityWp,
+  "wp-nao-games": jogabilidadeNaoGamesEntityWp,
   youtube: jogabilidadeEntityYoutube,
 };

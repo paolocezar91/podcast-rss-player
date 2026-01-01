@@ -70,13 +70,13 @@ const TabsList = ({ children, className = "", ariaLabel }: TabsListProps) => {
   return (
     <div
       className={cn(
-        "max-w-32 bg-gray-50 border-r border-gray-200 h-full",
+        "max-w-34 bg-gray-50 border-r border-gray-200 h-full",
         className
       )}
       role="tablist"
       aria-label={ariaLabel}
     >
-      <div className="p-4 space-y-2">{children}</div>
+      <div className="space-y-2">{children}</div>
     </div>
   );
 };
@@ -92,7 +92,7 @@ const TabsTrigger = ({ value, children, className = "" }: TabsTriggerProps) => {
       aria-controls={`tab-content-${value}`}
       onClick={() => setActiveTab(value)}
       className={cn(
-        "text-left rounded-lg transition-colors duration-200 w-24 h-24",
+        "text-left rounded-lg transition-colors duration-200",
         activeTab === value
           ? "bg-blue-500 text-white shadow-md"
           : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 opacity-70",

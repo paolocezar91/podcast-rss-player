@@ -2,7 +2,7 @@ import React from "react";
 import Skeleton from "../ui/Skeleton";
 import { ContentColumn } from "../ui/content/ContentColumn";
 import DescriptionColumn from "../ui/content/DescriptionColumn";
-import Table from "../table/table";
+import Table from "../ui/table/Table";
 import { twMerge as cn } from "tailwind-merge";
 
 export default function WordpressPostsSkeleton() {
