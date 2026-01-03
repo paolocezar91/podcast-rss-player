@@ -41,8 +41,7 @@ export default function AudioFeed({ feed }: { feed: RSSFeedModel }) {
     return (
       <Thumbnail
         className="w-48 h-48"
-        image={images}
-        imageIndex={2}
+        image={images[2] ?? ""}
         alt={channel.title}
       />
     );

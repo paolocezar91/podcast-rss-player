@@ -4,13 +4,12 @@ import WordpressPosts from "./WordpressPosts";
 import WordpressPostsSkeleton from "./WordpressPostsSkeleton";
 import { useAudioPlayer } from "@/context/AudioPlayerProvider";
 import { useEffect } from "react";
+import { WordpressEntity } from "@/types/wp";
 
 export default function WordpressPostsByCategory({
-  title,
-  category,
+  model,
 }: {
-  title: string;
-  category: number;
+  model: WordpressEntity;
 }) {
   const {
     data,
@@ -19,7 +18,7 @@ export default function WordpressPostsByCategory({
     error,
     fetchNextPage,
     isFetchingNextPage,
-  } = useWordPressPostsByCategory(String(category));
+  } = useWordPressPostsByCategory(String(model.category));
   const { toggleShow } = useAudioPlayer();
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function WordpressPostsByCategory({
 
   return (
     <WordpressPosts
-      title={title}
+      model={model}
       posts={data?.pages?.flat() ?? []}
       isLoading={isLoading}
       hasNextPage={hasNextPage}

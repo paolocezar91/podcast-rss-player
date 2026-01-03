@@ -19,17 +19,27 @@ interface CollapsibleProps {
   defaultOpen?: boolean;
   children?: React.ReactNode;
   className?: string;
+  onToggle?: (value: boolean) => void;
 }
 
 const Collapsible: React.FC<CollapsibleProps> = ({
   defaultOpen = false,
   children,
   className,
+  onToggle,
 }) => {
   const [open, setOpen] = useState<boolean>(defaultOpen);
 
   return (
-    <CollapsibleContext.Provider value={{ open, setOpen }}>
+    <CollapsibleContext.Provider
+      value={{
+        open,
+        setOpen: (value) => {
+          setOpen(value);
+          onToggle?.(value);
+        },
+      }}
+    >
       <div className={className}>{children}</div>
     </CollapsibleContext.Provider>
   );

@@ -9,6 +9,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -291,7 +292,9 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const toggleShow = useCallback(
     (value?: boolean) => {
       setShow((prev) => value ?? !prev);
-      pause();
+      if (!value) {
+        pause();
+      }
     },
     [setShow, pause]
   );
@@ -310,6 +313,10 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     isCurrentPost,
     toggleShow,
   };
+
+  useEffect(() => {
+    console.log(state.playing);
+  }, [state.playing]);
 
   return (
     <AudioPlayerContext.Provider value={contextValue}>
