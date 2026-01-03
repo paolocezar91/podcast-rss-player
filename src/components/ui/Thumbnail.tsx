@@ -5,13 +5,13 @@ export default function Thumbnail({
   alt,
   className = "w-24 h-24",
 }: {
-  image: string;
+  image?: string;
   alt: string;
   className?: string;
 }) {
   return (
     <img
-      src={"https://placehold.co/48"}
+      src={image ?? "https://placehold.co/48"}
       alt={alt}
       className={cn("rounded-lg shadow-lg", className)}
     />

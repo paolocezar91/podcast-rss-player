@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ConnectedPlayPauseButton from "../player/ConnectedPlayerPauseButton";
 import { SortingDir, SortMapping, sortResources } from "../ui/table/sorting";
 import Table from "../ui/table/Table";
+import Thumbnail from "../ui/Thumbnail";
 
 export type SortKey = "title" | "date";
 
@@ -101,9 +102,10 @@ export default function WordpressPostDescription({
         {posts.length > 0 && (
           <>
             <div className="flex flex-col items-center gap-4 mt-2 justify-center">
+              <Thumbnail alt={title}></Thumbnail>
               <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
             </div>
-            {description && <div className="p-4">{description}</div>}
+            {description && <div className="p-4 text-sm">{description}</div>}
           </>
         )}
       </div>
