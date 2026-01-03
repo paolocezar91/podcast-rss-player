@@ -6,8 +6,7 @@ import Thumbnail from "@/components/ui/Thumbnail";
 import Tooltip from "@/components/ui/tooltip/Tooltip";
 import WordpressPostsByCategory from "@/components/wp/WordpressPostsByCategory";
 import YoutubePlaylist from "@/components/YoutubePlaylist";
-import { jogabilidadeEntity } from "@/data/jogabilidayEntity";
-import { Gamepad, Podcast, Youtube } from "lucide-react";
+import { jogabilidadeEntity } from "@/data/jogabilidadeEntity";
 
 export function Jogabilidade() {
   const { title, feeds, image } = jogabilidadeEntity;
@@ -16,11 +15,16 @@ export function Jogabilidade() {
   return (
     <Tabs.Root defaultValue={defaultTab}>
       <Tabs.List className="overflow-auto px-2" ariaLabel="feeds">
-        <Thumbnail image={image} alt={title} className="w-20 h-20 px-1" />
-        <Collapsible className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-2">
+          <Thumbnail image={image} alt={title} className="w-20 h-20 px-1" />
+          <span className="text-sm font-bold">Feeds</span>
+        </div>
+        <Collapsible defaultOpen className="flex flex-col items-center">
           <Tooltip content={feeds["wp-games"].title} position="right">
             <CollapsibleTrigger>
-              <Gamepad />
+              <span className="text-sm font-semibold">
+                {jogabilidadeEntity.feeds["wp-games"].title}
+              </span>
             </CollapsibleTrigger>
           </Tooltip>
           <CollapsibleContent className="flex flex-col gap-2 mt-1">
@@ -43,7 +47,9 @@ export function Jogabilidade() {
         <Collapsible className="flex flex-col items-center">
           <Tooltip content={feeds["wp-nao-games"].title} position="right">
             <CollapsibleTrigger>
-              <Podcast />
+              <span className="text-sm font-semibold">
+                {jogabilidadeEntity.feeds["wp-nao-games"].title}
+              </span>
             </CollapsibleTrigger>
           </Tooltip>
           <CollapsibleContent className="flex flex-col gap-2 mt-1">
@@ -70,7 +76,9 @@ export function Jogabilidade() {
             position="right"
           >
             <CollapsibleTrigger>
-              <Youtube />
+              <span className="text-sm font-semibold">
+                {jogabilidadeEntity.feeds.youtube.title}
+              </span>
             </CollapsibleTrigger>
           </Tooltip>
           <CollapsibleContent className="flex flex-col gap-2 mt-1">
