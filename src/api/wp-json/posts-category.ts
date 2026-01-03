@@ -5,7 +5,6 @@ function extractMp3Url(htmlString: string) {
   // Create a temporary DOM element to parse the HTML
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, "text/html");
-
   let mp3Url = null;
 
   // Strategy 1: Look for audio source tag
@@ -83,9 +82,15 @@ const processWordPressPosts = (
 
 // Fetch function with paging
 const PER_PAGE = 25;
+// Read the parent URL from environment (CRA requires the REACT_APP_ prefix).
+const WP_PARENT_URL: string = (process.env.REACT_APP_WP_PARENT_URL ||
+  process.env.WP_PARENT_URL ||
+  (typeof window !== "undefined" ? (window as any).WP_PARENT_URL : undefined) ||
+  "") as string;
+
 const fetchWordPressPostsByCategory = async (categoryId: string, page = 1) => {
   const response = await fetch(
-    `https://jogabilida.de/wp-json/wp/v2/posts?categories=${categoryId}&status=publish&per_page=${PER_PAGE}&page=${page}`
+    `${WP_PARENT_URL}/wp-json/wp/v2/posts?categories=${categoryId}&status=publish&per_page=${PER_PAGE}&page=${page}`
   );
 
   if (!response.ok) {

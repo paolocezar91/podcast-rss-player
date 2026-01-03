@@ -1,9 +1,10 @@
 import type YouTubeVideoElement from "youtube-video-element";
 
 export interface YoutubePlaylistEntity {
+  id: string;
   title: string;
-  description: string;
-  image: string;
+  description?: string;
+  image?: string;
   url: string;
 }
 

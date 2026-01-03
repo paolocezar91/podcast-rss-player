@@ -9,6 +9,9 @@ export interface WordpressPost {
 }
 
 export interface WordpressEntity {
+  id: string;
   category: number;
   title: string;
+  description?: string;
+  image?: string;
 }

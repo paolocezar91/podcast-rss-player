@@ -18,7 +18,7 @@ const CollapsibleTrigger = React.forwardRef<HTMLButtonElement, Props>(
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         {...props}
-        className="flex gap-1 items-center w-full flex justify-center"
+        className="flex gap-1 items-center flex justify-center"
       >
         <span>{children}</span>
         <ChevronRight

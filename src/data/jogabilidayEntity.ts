@@ -1,50 +1,79 @@
 import { WordpressEntity } from "@/types/wp";
 import { YoutubePlaylistEntity } from "@/types/youtube";
 
-const jogabilidadeGamesEntityWp: Record<string, WordpressEntity> = {
-  "dash-wp": {
+const jogabilidadeGamesEntityWp: WordpressEntity[] = [
+  {
+    id: "dash-wp",
     category: 410,
     title: "Dash Podcast",
+    description:
+      "Cada edição aborda um tema específico: seja um jogo, uma franquia, um desenvolvedor, um conceito ou o que nos der na telha!",
   },
-  "vertice-wp": {
+  {
+    id: "vertice-wp",
     category: 532,
     title: "Vértice",
+    description: "Discutimos as principais notícias e lançamentos.",
   },
-};
-const jogabilidadeNaoGamesEntityWp: Record<string, WordpressEntity> = {
-  "fora-da-caixa-wp": {
+];
+const jogabilidadeNaoGamesEntityWp: WordpressEntity[] = [
+  {
+    id: "fora-da-caixa-wp",
     category: 930,
     title: "Fora da Caixa",
+    description:
+      "Tudo que não é vídeo game é pauta aqui: filmes, livros, quadrinhos ou simplesmente anedotas do cotidiano.",
   },
-  "linha-quente-wp": {
+  {
+    id: "linha-quente-wp",
     category: 929,
     title: "Linha Quente",
+    description:
+      "Respondemos as mais (menos) importantes perguntas de nossos ouvintes nesse podcast sem nenhum filtro.",
   },
-  "jack-wp": {
+  {
+    id: "jack-wp",
     category: 716,
     title: "J.A.C.K.",
+    description:
+      "O Jogabilidade Anime Club Knights funciona como um clube do livro, só que com animes e mangás.",
   },
-};
-const jogabilidadeEntityYoutube: Record<string, YoutubePlaylistEntity> = {
-  "vertice-youtube": {
+];
+const jogabilidadeEntityYoutube: YoutubePlaylistEntity[] = [
+  {
+    id: "vertice-youtube",
     title: "VÉRTICE - YouTube (VOD)",
     description: "O podcast de games e notícias do Jogabilidade.",
-    image:
-      "https://i.ytimg.com/pl_c/PLRW2pq5AgAVGjDiinNYKIPb7B6Cg4_M8H/studio_square_thumbnail.jpg?sqp=CJ2E7sgG-oaymwEICPABEPABSFqi85f_AwYI2OXuoAY=&rs=AOn4CLAtbN5HBIZFO6Um6ziXGeTqWAbNnQ&days_since_epoch=20409",
     url: "https://www.youtube.com/playlist?list=PLRW2pq5AgAVGjDiinNYKIPb7B6Cg4_M8H",
   },
-  "jogabiliday-2025-youtube": {
+  {
+    id: "jogabiliday-2025-youtube",
     title: "Jogabiliday 2025 (VOD)",
     description:
       "Re-veja ou assista pela primeira vez todo o Jogabiliday 2025!",
-    image:
-      "https://i.ytimg.com/pl_c/PLRW2pq5AgAVGjDiinNYKIPb7B6Cg4_M8H/studio_square_thumbnail.jpg?sqp=CJ2E7sgG-oaymwEICPABEPABSFqi85f_AwYI2OXuoAY=&rs=AOn4CLAtbN5HBIZFO6Um6ziXGeTqWAbNnQ&days_since_epoch=20409",
     url: "https://www.youtube.com/playlist?list=PLRW2pq5AgAVG9R9oYWki7Ta6TZiA_pigc",
   },
-};
+];
 
 export const jogabilidadeEntity = {
-  "wp-games": jogabilidadeGamesEntityWp,
-  "wp-nao-games": jogabilidadeNaoGamesEntityWp,
-  youtube: jogabilidadeEntityYoutube,
+  title: "Jogabilidade",
+  parentUrl: "https://jogabilida.de",
+  image: "",
+  feeds: {
+    "wp-games": {
+      image: "",
+      title: "Feed Games",
+      entity: jogabilidadeGamesEntityWp,
+    },
+    "wp-nao-games": {
+      image: "",
+      title: "Feed Não-Games",
+      entity: jogabilidadeNaoGamesEntityWp,
+    },
+    youtube: {
+      image: "",
+      title: "YouTube VODs",
+      entity: jogabilidadeEntityYoutube,
+    },
+  },
 };

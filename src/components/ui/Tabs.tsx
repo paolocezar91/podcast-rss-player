@@ -92,7 +92,7 @@ const TabsTrigger = ({ value, children, className = "" }: TabsTriggerProps) => {
       aria-controls={`tab-content-${value}`}
       onClick={() => setActiveTab(value)}
       className={cn(
-        "text-left rounded-lg transition-colors duration-200",
+        "text-left rounded transition-colors duration-200 z-[9999]",
         activeTab === value
           ? "bg-blue-500 text-white shadow-md"
           : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 opacity-70",

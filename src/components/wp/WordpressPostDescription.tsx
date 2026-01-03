@@ -9,6 +9,7 @@ export type SortKey = "title" | "date";
 
 export default function WordpressPostDescription({
   title,
+  description,
   posts,
   setSelectedPost,
   fetchNextPage,
@@ -16,6 +17,7 @@ export default function WordpressPostDescription({
   isFetchingNextPage,
 }: {
   title: string;
+  description: string;
   posts: WordpressPost[];
   setSelectedPost: (post: WordpressPost) => void;
   fetchNextPage?: () => void;
@@ -101,12 +103,7 @@ export default function WordpressPostDescription({
             <div className="flex flex-col items-center gap-4 mt-2 justify-center">
               <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
             </div>
-            <div className="p-4">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
-              praesentium sed facere eaque eveniet inventore, earum architecto,
-              quo vel ullam tempora animi facilis quae excepturi nostrum. Minus
-              dolor eligendi deleniti.
-            </div>
+            {description && <div className="p-4">{description}</div>}
           </>
         )}
       </div>

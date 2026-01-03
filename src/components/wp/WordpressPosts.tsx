@@ -1,5 +1,5 @@
 // WordPressPosts.tsx
-import { WordpressPost } from "@/types/wp";
+import { WordpressEntity, WordpressPost } from "@/types/wp";
 import { useEffect, useState } from "react";
 import { ContentColumn } from "../ui/content/ContentColumn";
 import DescriptionColumn from "../ui/content/DescriptionColumn";
@@ -9,15 +9,13 @@ import WordpressPostDescription from "./WordpressPostDescription";
 export type SortKey = "title" | "date";
 
 export default function WordpressPosts({
-  title,
+  model,
   posts,
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
-  isLoading,
-  error,
 }: {
-  title: string;
+  model: WordpressEntity;
   fetchNextPage: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
@@ -39,8 +37,9 @@ export default function WordpressPosts({
     <div className="flex gap-4 h-full">
       <DescriptionColumn>
         <WordpressPostDescription
-          title={title}
+          title={model.title}
           posts={posts}
+          description={model.description ?? ""}
           setSelectedPost={setSelectedPost}
           fetchNextPage={fetchNextPage}
           hasNextPage={!!hasNextPage}
